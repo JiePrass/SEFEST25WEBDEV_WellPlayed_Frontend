@@ -11,10 +11,13 @@ const HistoryChart = ({ data, yearFilter }) => {
         'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'
     ];
 
-    // Mapping data ke bulan (0-11)
+    // Inisialisasi array untuk menyimpan total emisi per bulan
     const monthlyData = new Array(12).fill(0);
+
     data.forEach(item => {
-        const month = new Date(item.date).getMonth();
+        if (!item.created_at || !item.value) return; // Pastikan `created_at` dan `value` ada
+        const date = new Date(item.created_at);
+        const month = date.getMonth(); // Ambil bulan (0-11)
         monthlyData[month] += item.value;
     });
 

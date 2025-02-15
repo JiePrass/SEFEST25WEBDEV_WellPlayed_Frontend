@@ -47,23 +47,23 @@ const Dashboard = ({ emissionData = [] }) => {
             filtered = emissionData;
         } else if (timeFilter === 'weekly') {
             const startDate = new Date(now);
-            startDate.setDate(now.getDate() - 6);
+            startDate.setDate(now.getDate() - 6); // 7 hari terakhir
 
             const previousStartDate = new Date(startDate);
-            previousStartDate.setDate(previousStartDate.getDate() - 7);
+            previousStartDate.setDate(previousStartDate.getDate() - 7); // Minggu sebelumnya
 
             filtered = emissionData.filter(item => {
-                const itemDateObj = new Date(item.date);
+                const itemDateObj = new Date(item.created_at);
                 return itemDateObj >= startDate && itemDateObj <= now;
             });
 
             previousFiltered = emissionData.filter(item => {
-                const itemDateObj = new Date(item.date);
+                const itemDateObj = new Date(item.created_at);
                 return itemDateObj >= previousStartDate && itemDateObj < startDate;
             });
         } else if (timeFilter === 'monthly') {
             filtered = emissionData.filter(item => {
-                const itemDateObj = new Date(item.date);
+                const itemDateObj = new Date(item.created_at);
                 return (
                     itemDateObj.getFullYear() === currentYear &&
                     (itemDateObj.getMonth() + 1) === currentMonth
@@ -71,7 +71,7 @@ const Dashboard = ({ emissionData = [] }) => {
             });
 
             previousFiltered = emissionData.filter(item => {
-                const itemDateObj = new Date(item.date);
+                const itemDateObj = new Date(item.created_at);
                 return (
                     itemDateObj.getFullYear() === currentYear &&
                     (itemDateObj.getMonth() + 1) === currentMonth - 1
@@ -91,6 +91,7 @@ const Dashboard = ({ emissionData = [] }) => {
         setAverageEmission(total / daysCount);
         setPreviousTotal(previousFiltered.length ? previousFiltered : []);
     };
+
 
     const getIndicatorColor = () => {
         let avgEmission = AVERAGE_EMISSION_MONTHLY;

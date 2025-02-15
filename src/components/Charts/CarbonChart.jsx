@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Filler } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 
-ChartJS.register(ArcElement, Tooltip, Legend)
+ChartJS.register(ArcElement, Tooltip, Legend, Filler) // Tambahkan Filler di sini
 
 export default function CarbonChart({ data }) {
     const groupedData = data.reduce((acc, curr) => {
@@ -23,7 +23,8 @@ export default function CarbonChart({ data }) {
                     '#f472b6',
                     '#a78bfa'
                 ],
-                hoverOffset: 4
+                hoverOffset: 4,
+                fill: true // Tetap gunakan opsi fill jika memang diperlukan
             }
         ]
     }

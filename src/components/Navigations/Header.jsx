@@ -1,12 +1,27 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-export default function Header() {
-    const [isLoggedIn, setIsLoggedIn] = useState(true);
+export default function Header({ setLogout }) {
+    const [username, setUsername] = useState("User"); // Default username
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Cek apakah token ada di localStorage
+        const token = localStorage.getItem("token");
+        if (token) {
+            setIsAuthenticated(true);
+            const storedUser = localStorage.getItem("username");
+            if (storedUser) setUsername(storedUser);
+        } else {
+            setIsAuthenticated(false);
+        }
+    }, []);
 
     return (
-        <header className="bg-[#FBFBFB] py-4 px-6 flex justify-between items-center">
+        <header className="bg-[#FBFBFB] py-4 px-6 flex justify-between items-center shadow-md">
             {/* Logo */}
             <div className="text-xl font-bold text-gray-800">
                 <Link to="/">🌿 CarbonTrack</Link>
@@ -22,24 +37,22 @@ export default function Header() {
 
             {/* Profile / Auth Buttons */}
             <div className="flex items-center space-x-4">
-                {isLoggedIn ? (
-                    <div className="flex items-center space-x-2">
+                {isAuthenticated ? (
+                    <Link to="/profile" className="flex items-center space-x-3">
                         <img
                             src="https://placehold.co/400"
                             alt="User"
                             className="w-10 h-10 rounded-full border"
                         />
-                        <span className="text-gray-700 font-medium">John Doe</span>
-                    </div>
+                        <span className="text-gray-700 font-medium">{username}</span>
+                    </Link>
                 ) : (
-                    <div className="flex space-x-2">
-                        <Link to="/login" className="px-4 py-2 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">
-                            Login
-                        </Link>
-                        <Link to="/register" className="px-4 py-2 text-sm text-blue-500 border border-blue-500 rounded-md hover:bg-blue-50">
-                            Register
-                        </Link>
-                    </div>
+                    <Link
+                        to="/login"
+                        className="px-4 py-2 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                    >
+                        Sign In
+                    </Link>
                 )}
             </div>
         </header>

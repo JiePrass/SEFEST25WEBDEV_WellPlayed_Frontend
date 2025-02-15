@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import Header from "../components/Navigations/Header";
 import Features from "../components/Home/Features";
@@ -5,11 +6,11 @@ import News from "../components/Home/News";
 import Contact from "../components/Home/Contact";
 import Footer from "../components/Navigations/Footer";
 
-export default function Home() {
+export default function Home({ setLogout }) {
     return (
         <div className="min-h-screen bg-[#FBFBFB]">
             {/* Header */}
-            <Header />
+            <Header setLogout={setLogout} />
             {/* Content */}
             <div className="mx-[40px]">
 

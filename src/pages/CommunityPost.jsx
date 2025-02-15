@@ -1,75 +1,115 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Post from "../components/Post";
 import CreatePostForm from "../components/Form/CreatePostForm";
-import FilterCategory from "../components/FilterCategory"; // ✅ Import FilterCategory
+import api from "../../services/api"; // Import instance Axios yang sudah dikonfigurasi
 
 export default function CommunityPage() {
-    const [posts, setPosts] = useState([
-        {
-            id: 1,
-            title: "Cara Mengurangi Penggunaan Plastik Sehari-hari",
-            content: "Kurangi plastik dengan membawa tas belanja sendiri dan gunakan botol minum reusable.",
-            category: "Daur Ulang",
-            likes: 5,
-            comments: ["Bagus banget idenya!", "Saya sudah coba dan berhasil!"],
-        },
-        {
-            id: 2,
-            title: "Menghemat Listrik dengan Lampu LED",
-            content: "Lampu LED lebih hemat energi dan tahan lama dibandingkan lampu biasa.",
-            category: "Energi Bersih",
-            likes: 8,
-            comments: ["Setuju! Lampu LED juga lebih terang.", "Pakai di rumah jadi hemat listrik."],
-        },
-    ]);
+    const [posts, setPosts] = useState([]);
 
-    const [selectedCategory, setSelectedCategory] = useState("");
-
-    const likePost = (postId) => {
-        setPosts(posts.map(post => post.id === postId ? { ...post, likes: post.likes + 1 } : post));
+    // Fungsi untuk mengambil data post dari API
+    const fetchPosts = async () => {
+        try {
+            const response = await api.get("/community"); // Pastikan endpoint ini benar
+            setPosts(response.data);
+        } catch (error) {
+            console.error("Error fetching posts:", error);
+        }
     };
 
-    const addComment = (postId, commentText) => {
-        setPosts(posts.map(post =>
-            post.id === postId ? { ...post, comments: [...post.comments, commentText] } : post
-        ));
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
+    // Fungsi untuk menyukai post
+    const likePost = async (postId) => {
+        // Optimistic update: perbarui state terlebih dahulu
+        setPosts(
+            posts.map((post) =>
+                post.id === postId ? { ...post, likes: (post.likes || 0) + 1 } : post
+            )
+        );
+        try {
+            await api.post(`/community/${postId}/like`);
+        } catch (error) {
+            console.error("Error liking post:", error);
+        }
     };
 
-    const reportPost = (postId) => {
+    // Fungsi untuk menambahkan komentar
+    const addComment = async (postId, commentText) => {
+        const user_id = parseInt(localStorage.getItem("user_id"), 10);
+        // Optimistic update
+        setPosts(
+            posts.map((post) => {
+                if (post.id === postId) {
+                    return {
+                        ...post,
+                        comments: [
+                            ...(post.comments || []),
+                            {
+                                id: `${Date.now()}-${Math.random()}`, // key unik sementara
+                                user_id,
+                                post_id: postId,
+                                comment: commentText, // gunakan "comment" untuk render
+                                commenter: {
+                                    id: user_id,
+                                    name: localStorage.getItem("username") || "User",
+                                },
+                                replies: [],
+                            },
+                        ],
+                    };
+                }
+                return post;
+            })
+        );
+        try {
+            await api.post(`/community/${postId}/comments`, {
+                content: commentText, // API mengharapkan "content"
+            });
+            fetchPosts();
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
+    };
+
+    // Fungsi untuk melaporkan post
+    const reportPost = async (postId) => {
         alert(`Post dengan ID ${postId} telah dilaporkan.`);
+        try {
+            await api.post(`/community/${postId}/report`);
+        } catch (error) {
+            console.error("Error reporting post:", error);
+        }
     };
 
-    const addPost = (newPost) => {
-        setPosts([{ ...newPost, id: posts.length + 1, likes: 0, comments: [] }, ...posts]);
+    // Fungsi untuk menambahkan post baru
+    const addPost = async (newPost) => {
+        try {
+            await api.post("/community", newPost);
+            fetchPosts();
+        } catch (error) {
+            console.error("Error adding post:", error);
+        }
     };
-
-    // 🔍 Filter post berdasarkan kategori yang dipilih
-    const filteredPosts = selectedCategory
-        ? posts.filter(post => post.category === selectedCategory)
-        : posts;
 
     return (
         <div className="min-h-screen bg-gray-50 py-8 px-4">
             <h1 className="text-xl md:text-2xl font-bold mb-4">Community</h1>
-
-            {/* 🔽 Form untuk membuat post baru */}
             <CreatePostForm addPost={addPost} />
-
-            {/* 🔽 Filter kategori */}
-            <FilterCategory
-                categories={["Daur Ulang", "Energi Bersih", "Transportasi"]}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-            />
-
-            {/* 🔽 Daftar post yang telah difilter */}
             <div className="transition-opacity duration-300 opacity-100 mt-4 space-y-4">
-
-                {filteredPosts.length === 0 ? (
-                    <p className="text-sm text-gray-500 text-center">Belum ada post dalam kategori ini.</p>
+                {posts.length === 0 ? (
+                    <p className="text-sm text-gray-500 text-center">Belum ada post.</p>
                 ) : (
-                    filteredPosts.map(post => (
-                        <Post key={post.id} post={post} likePost={likePost} addComment={addComment} reportPost={reportPost} />
+                    posts.map((post) => (
+                        <Post
+                            key={post.id}
+                            post={post}
+                            likePost={likePost}
+                            addComment={addComment}
+                            reportPost={reportPost}
+                            refreshPosts={fetchPosts} // pastikan refreshPosts dikirim sebagai prop
+                        />
                     ))
                 )}
             </div>

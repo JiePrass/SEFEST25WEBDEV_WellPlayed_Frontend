@@ -1,6 +1,10 @@
 /* eslint-disable react/prop-types */
 import { Line } from 'react-chartjs-2';
 import { useMemo } from 'react';
+import { Chart as ChartJS, LineElement, Tooltip, Legend, Filler, CategoryScale, LinearScale, PointElement } from 'chart.js';
+
+// Registrasi plugin termasuk Filler
+ChartJS.register(LineElement, Tooltip, Legend, Filler, CategoryScale, LinearScale, PointElement);
 
 const ComparisonChart = ({ currentData, previousData, timeFilter }) => {
     const chartData = useMemo(() => {
@@ -28,7 +32,6 @@ const ComparisonChart = ({ currentData, previousData, timeFilter }) => {
             ]
         };
     }, [currentData, previousData, timeFilter]);
-
 
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm">

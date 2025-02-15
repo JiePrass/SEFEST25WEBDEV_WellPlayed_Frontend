@@ -18,7 +18,8 @@ const History = ({ emissionData = [] }) => {
 
     const filterData = () => {
         const filtered = emissionData.filter((item) => {
-            const itemYear = new Date(item.date).getFullYear();
+            if (!item.created_at) return false;
+            const itemYear = new Date(item.created_at).getFullYear();
             return itemYear === yearFilter;
         });
         setFilteredData(filtered);
