@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
     return (
-        <footer className="bg-slate-200 text-black rounded-xl my-8">
+        <footer className="bg-slate-200 text-black rounded-xl mb-8 mt-[-175px]">
             <div className="max-w-7xl mx-auto px-6 py-8">
                 {/* Bagian atas footer */}
                 <div className="flex flex-col md:flex-row items-center justify-between">

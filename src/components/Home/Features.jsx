@@ -5,23 +5,23 @@ import { useNavigate } from "react-router-dom";
 const features = [
     {
         "title": "Kalkulator Jejak Karbon",
-        "shortDesc": "Hitung emisi dari aktivitas sehari-hari.",
+        "shortDesc": "Hitung emisi karbon yang dikeluarkan dari aktivitas sehari-hari.",
         "longDesc": "Masukkan aktivitas harianmu dan dapatkan estimasi emisi karbon yang dihasilkan, lengkap dengan tips untuk menguranginya.",
-        "image": "/assets/images/dashboard.jpg",
+        "image": "/assets/images/kalkulator.jpg",
         "link": "/calculator"
     },
     {
         "title": "Dashboard Informatif",
         "shortDesc": "Tinjau aktivitas sehari-hari kamu dengan lebih mudah.",
         "longDesc": "Lihat grafik dan statistik emisi karbon harian, mingguan, atau bulanan untuk memantau serta membandingkan pengurangan emisi dari waktu ke waktu.",
-        "image": "/assets/images/history.jpg",
+        "image": "/assets/images/dashboard.jpg",
         "link": "/dashboard"
     },
     {
         "title": "Gamifikasi Seru",
         "shortDesc": "Kurangi emisi, kumpulkan poin, dan dapatkan hadiah.",
         "longDesc": "Dapatkan poin setiap kali kamu mengurangi emisi, selesaikan tantangan ramah lingkungan, dan tukarkan poin dengan reward menarik.",
-        "image": "/assets/images/settings.jpg",
+        "image": "/assets/images/game.jpg",
         "link": "/gamification"
     }
 ];
@@ -39,7 +39,7 @@ function FeatureCard({ feature }) {
             onClick={() => navigate(feature.link)}
         >
             {/* Overlay */}
-            <div className={`absolute inset-0 bg-black transition-all duration-500 ${hover ? "bg-opacity-80" : "bg-opacity-50"}`}></div>
+            <div className={`absolute inset-0 bg-black/20 transition-all duration-500 ${hover ? "bg-opacity-80" : "bg-opacity-50"}`}></div>
 
             {/* Content */}
             <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">

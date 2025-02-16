@@ -27,7 +27,7 @@ export default function Home() {
                     transition={{ duration: 1 }}
                 >
                     <Header />
-                    <div className="mx-[40px] space-y-20">
+                    <div className="mx-[40px] space-y-10">
                         <MotionWrapper>
                             <HeroSection />
                         </MotionWrapper>

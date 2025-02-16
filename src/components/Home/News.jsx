@@ -2,21 +2,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function NewsCard({ className, link, title, description, fullText }) {
+function NewsCard({ className, link, title, description, fullText, bgImage }) {
     const [hover, setHover] = useState(false);
     const navigate = useNavigate();
 
     return (
         <div
             className={`relative bg-cover bg-center rounded-lg overflow-hidden transition duration-500 cursor-pointer ${className}`}
-            style={{ backgroundImage: "url(/assets/images/news.jpg)" }}
+            style={{ backgroundImage: `url(${bgImage})` }}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
             onClick={() => navigate(link)}
         >
             {/* Overlay */}
             <div
-                className={`absolute inset-0 bg-black transition-all duration-500 ${hover ? "bg-opacity-80" : "bg-opacity-50"}`}
+                className={`absolute inset-0 transition-all duration-500 ${hover ? "bg-opacity-80" : "bg-opacity-50"}`}
             ></div>
 
             {/* Content */}
@@ -52,23 +52,26 @@ export default function News() {
             <div className="grid grid-cols-12 gap-6 h-[600px]">
                 <NewsCard
                     className="col-span-7 h-full"
-                    link="/news-detail/1"
-                    title="Pemanasan Global Semakin Parah"
+                    link="https://www.detik.com/edu/detikpedia/d-7772265/suhu-makin-meningkat-ilmuwan-bumi-sudah-terlalu-panas-untuk-ditinggali-lansia"
+                    title="Suhu Makin Meningkat, Ilmuwan: Bumi Sudah Terlalu Panas untuk Ditinggali Lansias"
                     description="Suhu bumi meningkat drastis akibat emisi karbon yang tidak terkendali."
                     fullText="Dampak perubahan iklim semakin terlihat dengan meningkatnya suhu global, mencairnya es di kutub, serta cuaca ekstrem yang semakin sering terjadi. Fenomena ini tidak hanya mengancam ekosistem alami tetapi juga mempengaruhi kehidupan manusia, termasuk peningkatan frekuensi bencana alam seperti banjir, kekeringan, dan badai besar yang merugikan berbagai sektor kehidupan."
+                    bgImage="https://akcdn.detik.net.id/community/media/visual/2023/04/25/ilustrasi-gelombang-panas_169.jpeg?w=700&q=90"
                 />
                 <div className="grid grid-rows-2 col-span-5 gap-6 h-full">
                     <NewsCard
-                        link="/news-detail/2"
-                        title="Polusi Udara Mengancam Kesehatan"
+                        link="https://news.detik.com/berita/d-6902495/ini-penyebab-polusi-udara-jakarta-yang-ancam-kesehatan-masyarakat"
+                        title="Polusi Udara Jakarta Mengancam Kesehatan Warga"
                         description="Kualitas udara menurun drastis akibat gas rumah kaca dan emisi kendaraan."
                         fullText="Paparan polusi udara berlebih dapat menyebabkan gangguan pernapasan, penyakit jantung, serta menurunkan kualitas hidup manusia secara signifikan."
+                        bgImage="https://akcdn.detik.net.id/community/media/visual/2023/08/21/potret-langit-jakarta-di-hari-pertama-wfh-50-asn-dki-6_169.jpeg?w=700&q=90"
                     />
                     <NewsCard
-                        link="/news-detail/3"
-                        title="Deforestasi dan Emisi Karbon"
-                        description="Hilangnya hutan memperparah krisis iklim akibat berkurangnya penyerapan CO₂."
-                        fullText="Penggundulan hutan yang terus berlangsung menyebabkan peningkatan kadar karbon di atmosfer, mempercepat pemanasan global, serta mengancam ekosistem alami."
+                        link="https://finance.detik.com/foto-bisnis/d-7604790/marak-pengunaan-solar-panel-untuk-tekan-emisi-karbon"
+                        title="Marak Pengunaan Solar Panel untuk Tekan Emisi Karbon"
+                        description="Emisi karbon yang menjadi salah satu penyebab pemanasan global. Penggunaan solar panel pun semakin marak untuk mengurangi emisi karbon."
+                        fullText="Emisi karbon dalam bentuk CO2 yang merupakan produk sampingan dari pembangkit listrik konvensional di seluruh dunia, menjadi salah satu penyebab suhu rata-rata dunia meningkat dan menjadi penyebab terganggunya aspek lain dari iklim bumi."
+                        bgImage="https://akcdn.detik.net.id/community/media/visual/2024/10/24/marak-pengunaan-solar-panel-untuk-tekan-emisi-karbon_169.jpeg?w=700&q=90"
                     />
                 </div>
             </div>
