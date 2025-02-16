@@ -1,45 +1,62 @@
 /* eslint-disable react/prop-types */
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "../components/Navigations/Header";
+import HeroSection from "../components/Home/HeroSection";
 import Features from "../components/Home/Features";
 import News from "../components/Home/News";
 import Contact from "../components/Home/Contact";
 import Footer from "../components/Navigations/Footer";
+import SplashScreen from "../components/SplashScreen";
 
-export default function Home({ setLogout }) {
+export default function Home() {
+    const [showSplash, setShowSplash] = useState(true);
+
     return (
-        <div className="min-h-screen bg-[#FBFBFB]">
-            {/* Header */}
-            <Header setLogout={setLogout} />
-            {/* Content */}
-            <div className="mx-[40px]">
+        <div className="min-h-screen bg-[#FBFBFB] relative">
+            {/* Splash Screen */}
+            <AnimatePresence>
+                {showSplash && <SplashScreen onAnimationComplete={() => setShowSplash(false)} />}
+            </AnimatePresence>
 
-                {/* Hero Section */}
-                <div
-                    className="relative bg-cover bg-center h-[400px] md:h-[500px] flex items-end p-6 md:p-10 rounded-lg"
-                    style={{ backgroundImage: "url('/assets/images/hero.jpg')" }}
+            {/* Main Content */}
+            {!showSplash && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1 }}
                 >
-                    <div className="text-center md:text-left text-white max-w-lg">
-                        <h1 className="text-lg md:text-4xl font-bold leading-tight">
-                            Hitung Emisi & Hidup Lebih Ramah Lingkungan
-                        </h1>
-                        <p className="text-xs md:text-lg mt-2 md:mt-4">
-                            Ketahui jejak karbonmu, ubah kebiasaan dengan seru, dan dapatkan hadiah lewat misi harian!
-                        </p>
-                        <Link
-                            to="/login"
-                            className="text-xs mt-4 md:mt-6 bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg transition inline-block"
-                        >
-                            Hitung Sekarang!
-                        </Link>
+                    <Header />
+                    <div className="mx-[40px] space-y-20">
+                        <MotionWrapper>
+                            <HeroSection />
+                        </MotionWrapper>
+                        <MotionWrapper>
+                            <Features />
+                        </MotionWrapper>
+                        <MotionWrapper>
+                            <News />
+                        </MotionWrapper>
+                        <MotionWrapper>
+                            <Contact />
+                        </MotionWrapper>
+                        <Footer />
                     </div>
-                </div>
+                </motion.div>
+            )}
+        </div>
+    );
+}
 
-                <Features />
-                <News />
-                <Contact />
-                <Footer />
-            </div>
-        </div >
+function MotionWrapper({ children }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            viewport={{ once: true }}
+        >
+            {children}
+        </motion.div>
     );
 }
