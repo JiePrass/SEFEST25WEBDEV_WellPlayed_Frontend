@@ -44,6 +44,9 @@ importers:
       react-tooltip:
         specifier: ^5.28.0
         version: 5.28.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      sweetalert2:
+        specifier: ^11.16.1
+        version: 11.16.1
     devDependencies:
       '@eslint/js':
         specifier: ^9.19.0
@@ -1596,6 +1599,9 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  sweetalert2@11.16.1:
+    resolution: {integrity: sha512-rGGByR/DkxqmPrJlsf4Yr8ud/kj3GQ3BVXokJIZK122fz/2PEZXexNZVftzdCyy4J1ehxXrhH+mUHPStCESvfA==}
 
   tailwindcss@4.0.4:
     resolution: {integrity: sha512-/ezDLEkOLf1lXkr9F2iI5BHJbexJpty5zkV2B8bGHCqAdbc9vk85Jgdkq+ZOvNkNPa3yAaqJ8DjRt584Bc84kw==}
@@ -3329,6 +3335,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  sweetalert2@11.16.1: {}
 
   tailwindcss@4.0.4: {}
 

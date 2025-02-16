@@ -90,7 +90,7 @@ export default function App() {
                           <Route path="/calculator" element={<CarbonCalculator />} />
                           <Route path="/community" element={<CommunityPage />} />
                           <Route path="/leaderboard" element={<Leaderboard />} />
-                          <Route path="/profile" element={<Profile handleLogout={handleLogout} />} />
+                          <Route path="/profile" element={<Profile handleLogout={handleLogout} emissionData={emissionData} />} />
                           <Route path="*" element={<Navigate to="/" />} />
                         </Routes>
                       </main>
