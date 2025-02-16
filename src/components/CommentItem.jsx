@@ -1,6 +1,12 @@
-// src/components/CommentItem.jsx
 /* eslint-disable react/prop-types */
 import { useState } from "react";
+
+// Helper function untuk membangun URL gambar profil
+function getProfileImageUrl(image) {
+    if (!image) return null;
+    // Jika image sudah diawali dengan "/" maka tidak perlu menambahkan lagi
+    return `http://localhost:2304${image.startsWith("/") ? "" : "/"}${image}`;
+}
 
 export default function CommentItem({ comment, replyComment }) {
     const [showReplyForm, setShowReplyForm] = useState(false);
@@ -19,9 +25,9 @@ export default function CommentItem({ comment, replyComment }) {
             <div className="flex items-start gap-3">
                 {/* Avatar komentar */}
                 <div className="w-8 h-8 flex-shrink-0">
-                    {comment.commenter?.profilePicture ? (
+                    {comment.commenter?.profile_picture ? (
                         <img
-                            src={comment.commenter.profilePicture}
+                            src={getProfileImageUrl(comment.commenter.profile_picture)}
                             alt={`${comment.commenter.name}'s avatar`}
                             className="w-full h-full rounded-full object-cover"
                         />
@@ -60,18 +66,14 @@ export default function CommentItem({ comment, replyComment }) {
                             </button>
                         </form>
                     )}
-                    {/* Nested replies */}
                     {comment.replies && comment.replies.length > 0 && (
                         <div className="mt-2 space-y-2 border-l-2 border-gray-200 pl-4">
                             {comment.replies.map((reply, index) => (
-                                <div
-                                    key={reply.id || index}
-                                    className="flex items-start gap-2"
-                                >
+                                <div key={reply.id || index} className="flex items-start gap-2">
                                     <div className="w-6 h-6 flex-shrink-0">
-                                        {reply.commenter?.profilePicture ? (
+                                        {reply.commenter?.profile_picture ? (
                                             <img
-                                                src={reply.commenter.profilePicture}
+                                                src={getProfileImageUrl(reply.commenter.profile_picture)}
                                                 alt={`${reply.commenter.name}'s avatar`}
                                                 className="w-full h-full rounded-full object-cover"
                                             />

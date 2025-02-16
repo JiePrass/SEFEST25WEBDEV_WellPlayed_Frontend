@@ -8,7 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import History from "./pages/History";
 import Profile from "./pages/Profile";
 import CarbonCalculator from "./pages/CarbonCalculator";
-import CommunityPost from "./pages/CommunityPost";
+import CommunityPage from "./pages/CommunityPage";
+import Leaderboard from "./pages/Leaderboard"
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Footer from "./components/Navigations/Footer";
@@ -23,7 +24,6 @@ export default function App() {
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
-      console.log("Token from localStorage:", token);
       setIsAuthenticated(!!token);
 
       if (token) {
@@ -88,8 +88,9 @@ export default function App() {
                           <Route path="/dashboard" element={<Dashboard emissionData={emissionData} />} />
                           <Route path="/history" element={<History emissionData={emissionData} />} />
                           <Route path="/calculator" element={<CarbonCalculator />} />
-                          <Route path="/community" element={<CommunityPost />} />
-                          <Route path="/profile" element={<Profile />} />
+                          <Route path="/community" element={<CommunityPage />} />
+                          <Route path="/leaderboard" element={<Leaderboard />} />
+                          <Route path="/profile" element={<Profile handleLogout={handleLogout} />} />
                           <Route path="*" element={<Navigate to="/" />} />
                         </Routes>
                       </main>
@@ -104,8 +105,9 @@ export default function App() {
                         <Route path="/dashboard" element={<Dashboard emissionData={emissionData} />} />
                         <Route path="/history" element={<History emissionData={emissionData} />} />
                         <Route path="/calculator" element={<CarbonCalculator />} />
+                        <Route path="/community" element={<CommunityPage />} />
+                        <Route path="/leaderboard" element={<Leaderboard />} />
                         <Route path="/profile" element={<Profile />} />
-                        <Route path="/community" element={<CommunityPost />} />
                         <Route path="*" element={<Navigate to="/" />} />
                       </Routes>
                     </main>

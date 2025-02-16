@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import BarChart from "../components/Charts/BarChart";
 
-export default function Profile() {
+export default function Profile({ handleLogout }) {
     // Data ringkasan profil (dummy) – ganti dengan data nyata dari API jika tersedia
     const [summary, setSummary] = useState({
         totalPoints: 1250,
@@ -73,6 +73,7 @@ export default function Profile() {
                 {/* Nama & Rank */}
                 <h1 className="text-3xl font-bold">Qodar Arrizqie</h1>
                 <p className="text-md text-gray-500">Algo Mobile Legend | Area Rank 75 Top Local</p>
+                <button onClick={handleLogout} className="bg-red-500 p-10">LOGOUT LE</button>
             </div>
 
             {/* Empat Kotak Ringkasan */}

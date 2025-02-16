@@ -1,4 +1,3 @@
-// src/components/Post.jsx
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { HeartIcon, ChatBubbleLeftIcon, FlagIcon } from "@heroicons/react/24/outline";
@@ -22,20 +21,30 @@ export default function Post({ post, likePost, addComment, reportPost, refreshPo
             await api.post(`/community/${post.id}/comments/${commentId}/reply`, {
                 content: replyText,
             });
-            refreshPosts(); // Refresh data agar UI sinkron dengan server
+            refreshPosts();
         } catch (error) {
             console.error("Error replying to comment:", error);
         }
     };
 
+    // Bangun URL foto profil author
+    const imgURL = post.author?.profile_picture
+        ? `http://localhost:2304${post.author.profile_picture.startsWith('/') ? '' : '/'}${post.author.profile_picture}`
+        : null;
+
+    // Hitung total likes berdasarkan community_likes array
+    const totalLikes = post.community_likes
+        ? post.community_likes.reduce((acc, item) => acc + (item.likeCount || 0), 0)
+        : 0;
+
     return (
         <div className="bg-white p-4 md:p-6 rounded-md shadow-md space-y-3">
-            {/* Header Post dengan foto profil author */}
+            {/* Header Post */}
             <div className="flex gap-3">
                 <div className="w-12 h-12 flex-shrink-0">
-                    {post.author?.profilePicture ? (
+                    {post.author?.profile_picture ? (
                         <img
-                            src={post.author.profilePicture}
+                            src={imgURL}
                             alt={`${post.author.name}'s avatar`}
                             className="w-full h-full rounded-full object-cover"
                         />
@@ -51,7 +60,7 @@ export default function Post({ post, likePost, addComment, reportPost, refreshPo
                 </div>
             </div>
 
-            {/* Konten post */}
+            {/* Konten Post */}
             {post.content && (
                 <p className="text-gray-600 text-sm">{post.content}</p>
             )}
@@ -63,7 +72,7 @@ export default function Post({ post, likePost, addComment, reportPost, refreshPo
                     onClick={() => likePost(post.id)}
                 >
                     <HeartIcon className="h-4 w-4 md:h-5 md:w-5 mr-1" />
-                    {post.likes || 0} Suka
+                    {totalLikes} Suka
                 </button>
                 <button
                     className="flex items-center text-gray-600 hover:text-blue-500 transition"
@@ -104,7 +113,6 @@ export default function Post({ post, likePost, addComment, reportPost, refreshPo
                             <CommentItem
                                 key={comment.id || index}
                                 comment={comment}
-                                postId={post.id}
                                 replyComment={replyComment}
                             />
                         ))}
