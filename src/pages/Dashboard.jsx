@@ -47,10 +47,10 @@ const Dashboard = ({ emissionData = [] }) => {
             filtered = emissionData;
         } else if (timeFilter === 'weekly') {
             const startDate = new Date(now);
-            startDate.setDate(now.getDate() - 6); // 7 hari terakhir
+            startDate.setDate(now.getDate() - 6);
 
             const previousStartDate = new Date(startDate);
-            previousStartDate.setDate(previousStartDate.getDate() - 7); // Minggu sebelumnya
+            previousStartDate.setDate(previousStartDate.getDate() - 7);
 
             filtered = emissionData.filter(item => {
                 const itemDateObj = new Date(item.created_at);
@@ -91,7 +91,6 @@ const Dashboard = ({ emissionData = [] }) => {
         setAverageEmission(total / daysCount);
         setPreviousTotal(previousFiltered.length ? previousFiltered : []);
     };
-
 
     const getIndicatorColor = () => {
         let avgEmission = AVERAGE_EMISSION_MONTHLY;
@@ -164,7 +163,9 @@ const Dashboard = ({ emissionData = [] }) => {
                                 filteredData.slice(0, visibleCount).map((item, index) => (
                                     <tr key={index} className="border-b last:border-0">
                                         <td className="py-3">{item.category}</td>
-                                        <td className="py-3">{new Date(item.date).toLocaleDateString("id-ID")}</td>
+                                        <td className="py-3">
+                                            {new Date(item.created_at).toLocaleDateString("id-ID")}
+                                        </td>
                                         <td className="py-3 font-medium">{item.value.toFixed(2)}</td>
                                     </tr>
                                 ))
@@ -190,4 +191,5 @@ const Dashboard = ({ emissionData = [] }) => {
         </div>
     );
 };
+
 export default Dashboard;

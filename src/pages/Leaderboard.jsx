@@ -1,5 +1,6 @@
+/* eslint-disable react/prop-types */
 // Leaderboard.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../../services/api";
 
 // Komponen ProfilePicture: menampilkan avatar atau placeholder
