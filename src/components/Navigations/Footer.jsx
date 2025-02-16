@@ -2,54 +2,46 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
     return (
-        <footer className="bg-slate-200 text-black rounded-xl mb-8">
+        <footer className="bg-gray-900 text-white mb-8 rounded-2xl">
             <div className="max-w-7xl mx-auto px-6 py-8">
                 {/* Bagian atas footer */}
-                <div className="flex flex-col md:flex-row items-center justify-between">
-                    {/* Judul / Tagline */}
-                    <div className="text-2xl md:text-3xl font-bold leading-tight">
-                        Pesona Alam
-                        <br />
-                        Warisan Nusantara
+                <div className="flex flex-col md:flex-row justify-between items-center">
+                    {/* Branding dan Tagline */}
+                    <div className="mb-4 md:mb-0">
+                        <h2 className="text-3xl font-bold">Carbon Tracker</h2>
+                        <p className="text-gray-400 mt-2">
+                            Tracking your carbon footprint for a greener future.
+                        </p>
                     </div>
-
-                    {/* Informasi Lokasi dan Tahun */}
-                    <div className="mt-4 md:mt-0 text-right space-y-1 text-sm md:text-base">
-                        <div>Bogor, Indonesia</div>
-                        <div>WellPlayed</div>
-                        <div>2024-2025</div>
-                    </div>
-                </div>
-
-                {/* Garis pemisah */}
-                <hr className="border-black my-6" />
-
-                {/* Bagian bawah footer */}
-                <div className="flex flex-col md:flex-row items-center justify-between">
-                    {/* Logo & Brand (Bisa diarahkan ke halaman utama) */}
-                    <Link to="/" className="flex items-center space-x-2">
-                        <span className="font-semibold">Carbon Tracker</span>
-                    </Link>
-
-                    {/* Menu Navigasi */}
-                    <nav className="flex items-center space-x-4 mt-4 md:mt-0 text-sm md:text-base">
-                        <Link to="/" className="hover:underline">
+                    {/* Navigasi */}
+                    <nav className="flex flex-wrap gap-4">
+                        <Link to="/" className="hover:text-green-400 transition-colors">
                             Beranda
                         </Link>
-                        <Link to="/calculator" className="hover:underline">
+                        <Link to="/calculator" className="hover:text-green-400 transition-colors">
                             Kalkulator
                         </Link>
-                        <Link to="/dashboard" className="hover:underline">
+                        <Link to="/dashboard" className="hover:text-green-400 transition-colors">
                             Dasbor
                         </Link>
-                        <Link to="/leaderboard" className="hover:underline">
+                        <Link to="/leaderboard" className="hover:text-green-400 transition-colors">
                             Papan Peringkat
                         </Link>
                     </nav>
+                </div>
 
-                    {/* Hak Cipta */}
-                    <div className="mt-4 md:mt-0 text-sm">
-                        © 2025 NusanTours
+                {/* Garis Pemisah */}
+                <hr className="border-gray-800 my-6" />
+
+                {/* Bagian bawah footer */}
+                <div className="flex flex-col md:flex-row justify-between items-center">
+                    <div className="text-sm text-gray-500 text-center md:text-left">
+                        <p>Bogor, Indonesia</p>
+                        <p>WellPlayed</p>
+                        <p>2024-2025</p>
+                    </div>
+                    <div className="mt-4 md:mt-0 text-sm text-gray-500">
+                        © 2025 Carbon Tracker. All rights reserved.
                     </div>
                 </div>
             </div>

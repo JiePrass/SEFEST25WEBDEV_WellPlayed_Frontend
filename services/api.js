@@ -31,7 +31,7 @@ export const registerUser = (name, email, password) => {
 
 export const fetchEmissionData = async () => {
     try {
-        const response = await api.get("/riwayat");
+        const response = await api.get("/kalkulator/riwayat");
         return response.data; // Kembalikan data untuk diproses di komponen
     } catch (error) {
         console.error("Error fetching emission data:", error);

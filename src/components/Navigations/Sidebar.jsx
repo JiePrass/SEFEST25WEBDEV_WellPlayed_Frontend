@@ -9,6 +9,7 @@ import {
     UserIcon,
     UsersIcon,
     TrophyIcon,
+    ClipboardDocumentListIcon,
     ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline';
 
@@ -18,6 +19,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, isCollapsed, setIsCollapsed }) =
         { name: 'Kalkulator Karbon', href: '/calculator', icon: <CalculatorIcon className="w-6 h-6" /> },
         { name: 'Riwayat', href: '/history', icon: <ClockIcon className="w-6 h-6" /> },
         { name: 'Komunitas', href: '/community', icon: <UsersIcon className="w-6 h-6" /> },
+        { name: 'Papan Misi', href: '/missions', icon: <ClipboardDocumentListIcon className="w-6 h-6" /> },
         { name: 'Papan Peringkat', href: '/leaderboard', icon: <TrophyIcon className="w-6 h-6" /> },
         { name: 'Profil', href: '/profile', icon: <UserIcon className="w-6 h-6" /> },
         { name: 'Kembali', href: '/home', icon: <ArrowLeftOnRectangleIcon className="w-6 h-6" /> }

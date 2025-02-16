@@ -9,6 +9,7 @@ import History from "./pages/History";
 import Profile from "./pages/Profile";
 import CarbonCalculator from "./pages/CarbonCalculator";
 import CommunityPage from "./pages/CommunityPage";
+import MissionsPage from "./pages/MissionsPage";
 import Leaderboard from "./pages/Leaderboard"
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -89,6 +90,7 @@ export default function App() {
                           <Route path="/history" element={<History emissionData={emissionData} />} />
                           <Route path="/calculator" element={<CarbonCalculator />} />
                           <Route path="/community" element={<CommunityPage />} />
+                          <Route path="/missions" element={<MissionsPage />} />
                           <Route path="/leaderboard" element={<Leaderboard />} />
                           <Route path="/profile" element={<Profile handleLogout={handleLogout} emissionData={emissionData} />} />
                           <Route path="*" element={<Navigate to="/" />} />
@@ -106,6 +108,7 @@ export default function App() {
                         <Route path="/history" element={<History emissionData={emissionData} />} />
                         <Route path="/calculator" element={<CarbonCalculator />} />
                         <Route path="/community" element={<CommunityPage />} />
+                        <Route path="/missions" element={<MissionsPage />} />
                         <Route path="/leaderboard" element={<Leaderboard />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="*" element={<Navigate to="/" />} />
