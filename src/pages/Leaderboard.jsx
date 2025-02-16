@@ -1,100 +1,95 @@
 /* eslint-disable react/prop-types */
-// Leaderboard.jsx
 import { useState, useEffect } from "react";
 import api from "../../services/api";
 
-// Komponen ProfilePicture: menampilkan avatar atau placeholder
-function ProfilePicture({ profilePicture, size }) {
-    let avatarSize;
-    switch (size) {
-        case "large":
-            avatarSize = "w-20 h-20 md:w-24 md:h-24";
-            break;
-        case "medium":
-            avatarSize = "w-16 h-16 md:w-20 md:h-20";
-            break;
-        case "small":
-            avatarSize = "w-8 h-8 md:w-10 md:h-10";
-            break;
-        default:
-            avatarSize = "w-16 h-16 md:w-20 md:h-20";
-    }
+function ProfilePicture({ profilePicture, size = "medium" }) {
+    const sizeClasses = {
+        large: "w-24 h-24 md:w-28 md:h-28",
+        medium: "w-16 h-16 md:w-20 md:h-20",
+        small: "w-10 h-10 md:w-12 md:h-12",
+    };
 
     return profilePicture ? (
-        <img
-            src={profilePicture}
-            alt="Profile"
-            className={`${avatarSize} rounded-full object-cover`}
-        />
+        <img src={profilePicture} alt="Profile" className={`${sizeClasses[size]} rounded-full object-cover border-2 border-white shadow-md`} />
     ) : (
-        <div
-            className={`${avatarSize} bg-gray-300 rounded-full flex items-center justify-center text-gray-700 text-sm`}
-        >
+        <div className={`${sizeClasses[size]} bg-gray-300 rounded-full flex items-center justify-center text-gray-700 text-sm border-2 border-white shadow-md`}>
             ?
         </div>
     );
 }
 
-// Komponen LeaderboardRow: menampilkan satu baris leaderboard
-function LeaderboardRow({ rank, user }) {
-    // Styling khusus untuk 3 peringkat teratas
-    let rowStyle = "bg-white";
-    if (rank === 1) rowStyle = "bg-yellow-100 font-bold";
-    else if (rank === 2) rowStyle = "bg-gray-100";
-    else if (rank === 3) rowStyle = "bg-orange-100";
+function TopThreeCard({ rank, user }) {
+    const rankStyles = [
+        "bg-yellow-400 text-black shadow-xl", // Rank 1
+        "bg-gray-300 text-gray-900 shadow-lg", // Rank 2
+        "bg-orange-400 text-gray-900 shadow-md", // Rank 3
+    ];
 
     return (
-        <tr className={`hover:bg-gray-50 transition ${rowStyle}`}>
-            <td className="px-4 py-2 text-sm md:text-base text-gray-700">{rank}</td>
-            <td className="px-4 py-2 text-sm md:text-base text-gray-700 flex items-center gap-2">
+        <div className={`flex flex-col items-center p-6 rounded-lg ${rankStyles[rank - 1]} w-1/3`}>
+            <span className="text-xl font-bold">#{rank}</span>
+            <ProfilePicture profilePicture={user.profile_picture} size="large" />
+            <span className="text-lg font-semibold mt-2">{user.name}</span>
+            <span className="text-md font-medium">{user.point} pts</span>
+        </div>
+    );
+}
+
+function LeaderboardRow({ rank, user }) {
+    return (
+        <tr className="border-b hover:bg-gray-50 transition">
+            <td className="px-4 py-2 text-center text-gray-700 font-semibold">{rank}</td>
+            <td className="px-4 py-2 flex items-center gap-3">
                 <ProfilePicture profilePicture={user.profile_picture} size="small" />
-                {user.name}
+                <span className="text-gray-800 font-medium text-lg">{user.name}</span>
             </td>
-            <td className="px-4 py-2 text-sm md:text-base text-gray-700">{user.point}</td>
+            <td className="px-4 py-2 text-gray-700 font-semibold text-center">{user.point}</td>
         </tr>
     );
 }
 
-// Komponen Leaderboard: komponen utama
 export default function Leaderboard() {
     const [leaderboardData, setLeaderboardData] = useState([]);
 
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const response = await api.get("/leaderboard"); // Pastikan endpoint ini benar
+                const response = await api.get("/leaderboard");
                 setLeaderboardData(response.data);
             } catch (error) {
                 console.error("Error fetching leaderboard:", error);
             }
         };
-
         fetchLeaderboard();
     }, []);
 
-    if (!Array.isArray(leaderboardData) || leaderboardData.length === 0) {
+    if (!leaderboardData.length) {
         return <div className="text-center py-8">Loading leaderboard...</div>;
     }
 
-    // Urutkan data berdasarkan poin tertinggi
     const sortedData = [...leaderboardData].sort((a, b) => b.point - a.point);
-    // Batasi hanya 15 peringkat teratas
-    const leaderboard = sortedData.slice(0, 15);
+    const topThree = sortedData.slice(0, 3);
+    const restLeaderboard = sortedData.slice(3, 20);
 
     return (
-        <div className="max-w-screen-lg mx-auto p-4">
-            <h1 className="text-2xl md:text-3xl font-bold mb-6">Leaderboard</h1>
-            <table className="w-full text-left bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="p-6 bg-gray-50 rounded-lg shadow-lg">
+            <h1 className="text-3xl font-bold text-center mb-6">🏆 Leaderboard</h1>
+            <div className="flex justify-center gap-4 mb-8">
+                {topThree.map((user, index) => (
+                    <TopThreeCard key={user.id} rank={index + 1} user={user} />
+                ))}
+            </div>
+            <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
                 <thead className="bg-gray-100">
                     <tr>
-                        <th className="px-4 py-2 text-gray-600 font-medium text-sm md:text-base">Rank</th>
-                        <th className="px-4 py-2 text-gray-600 font-medium text-sm md:text-base">Name</th>
-                        <th className="px-4 py-2 text-gray-600 font-medium text-sm md:text-base">Points</th>
+                        <th className="px-4 py-2 text-gray-600 font-medium text-center">Rank</th>
+                        <th className="px-4 py-2 text-gray-600 font-medium">Name</th>
+                        <th className="px-4 py-2 text-gray-600 font-medium text-center">Points</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {leaderboard.map((user, index) => (
-                        <LeaderboardRow key={user.id} rank={index + 1} user={user} />
+                    {restLeaderboard.map((user, index) => (
+                        <LeaderboardRow key={user.id} rank={index + 4} user={user} />
                     ))}
                 </tbody>
             </table>
