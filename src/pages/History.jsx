@@ -7,17 +7,23 @@ import HistoryDistribution from '../components/HistoryDistribution';
 import CarbonChart from '../components/Charts/CarbonChart';
 import TrendComparison from '../components/TrendComparison';
 
-const History = ({ emissionData = [] }) => {
+const History = ({ emissionData = {} }) => {
+    // Ekstrak array emissions dari response API.
+    const emissions = Array.isArray(emissionData.emissions)
+        ? emissionData.emissions
+        : [];
+
     const [yearFilter, setYearFilter] = useState(new Date().getFullYear());
     const [filteredData, setFilteredData] = useState([]);
 
     useEffect(() => {
         console.log("Year Filter Updated:", yearFilter);
         filterData();
-    }, [yearFilter, emissionData]);
+    }, [yearFilter, emissions]);
 
     const filterData = () => {
-        const filtered = emissionData.filter((item) => {
+        // Filter data berdasarkan tahun dari properti created_at
+        const filtered = emissions.filter((item) => {
             if (!item.created_at) return false;
             const itemYear = new Date(item.created_at).getFullYear();
             return itemYear === yearFilter;
@@ -61,11 +67,12 @@ const History = ({ emissionData = [] }) => {
                         <TrendComparison
                             data={filteredData}
                             yearFilter={yearFilter}
-                            emissionData={emissionData}
+                            emissionData={emissions}
                         />
                     </div>
                 </div>
             </div>
+
             <div className="bg-white p-6 rounded-xl shadow-sm">
                 <HistoryTable data={filteredData} />
             </div>

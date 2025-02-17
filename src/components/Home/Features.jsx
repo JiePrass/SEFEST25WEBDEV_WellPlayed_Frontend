@@ -60,7 +60,7 @@ function FeatureCard({ feature }) {
 export default function Features() {
     return (
         <div className="mt-10">
-            <h1 className="text-lg md:text-4xl font-bold leading-tight">Jelajahi Fitur Utama &<br />Mulai Aksi Nyata!</h1>
+            <h1 className="text-lg text-center md:text-left md:text-4xl font-bold leading-tight">Jelajahi Fitur Utama &<br />Mulai Aksi Nyata!</h1>
             <div className="flex flex-col md:flex-row justify-center gap-6 mb-10 mt-5">
                 {features.map((feature, index) => (
                     <FeatureCard key={index} feature={feature} />

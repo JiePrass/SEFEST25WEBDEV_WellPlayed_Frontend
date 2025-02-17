@@ -4,7 +4,7 @@ import { HeartIcon, ChatBubbleLeftIcon, FlagIcon } from "@heroicons/react/24/out
 import api from "../../services/api";
 import CommentItem from "./CommentItem";
 
-export default function Post({ post, likePost, addComment, reportPost, refreshPosts }) {
+export default function Post({ post, toggleLikePost, addComment, reportPost, refreshPosts }) {
     const [commentText, setCommentText] = useState("");
     const [showComments, setShowComments] = useState(false);
 
@@ -32,17 +32,19 @@ export default function Post({ post, likePost, addComment, reportPost, refreshPo
         ? `http://localhost:2304${post.author.profile_picture.startsWith('/') ? '' : '/'}${post.author.profile_picture}`
         : null;
 
-    // Hitung total likes berdasarkan community_likes array
-    const totalLikes = post.community_likes
-        ? post.community_likes.reduce((acc, item) => acc + (item.likeCount || 0), 0)
-        : 0;
+    // Hitung total likes berdasarkan panjang array `community_likes`
+    const totalLikes = post.community_likes ? post.community_likes.length : 0;
+
+    // Periksa apakah user sudah like post ini
+    const loggedInUserId = parseInt(localStorage.getItem("user_id"), 10);
+    const isLikedByUser = post.community_likes?.some((like) => like.user.id === loggedInUserId);
 
     return (
         <div className="bg-white p-4 md:p-6 rounded-md shadow-md space-y-3">
             {/* Header Post */}
             <div className="flex gap-3">
                 <div className="w-12 h-12 flex-shrink-0">
-                    {post.author?.profile_picture ? (
+                    {imgURL ? (
                         <img
                             src={imgURL}
                             alt={`${post.author.name}'s avatar`}
@@ -68,12 +70,14 @@ export default function Post({ post, likePost, addComment, reportPost, refreshPo
             {/* Tombol Interaksi */}
             <div className="flex items-center justify-between mt-2 text-xs md:text-sm">
                 <button
-                    className="flex items-center text-gray-600 hover:text-red-500 transition"
-                    onClick={() => likePost(post.id)}
+                    className={`flex items-center ${isLikedByUser ? 'text-red-500' : 'text-gray-600'
+                        } hover:text-red-500 transition`}
+                    onClick={() => toggleLikePost(post.id)}
                 >
                     <HeartIcon className="h-4 w-4 md:h-5 md:w-5 mr-1" />
                     {totalLikes} Suka
                 </button>
+
                 <button
                     className="flex items-center text-gray-600 hover:text-blue-500 transition"
                     onClick={() => setShowComments(!showComments)}

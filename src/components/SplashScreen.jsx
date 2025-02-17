@@ -23,9 +23,9 @@ export default function SplashScreen({ onAnimationComplete }) {
         >
             {/* Logo muncul dengan fade-in */}
             <motion.img
-                src="/assets/Logo/logo.jpg" // Sesuaikan path logo
+                src="/assets/Logo/logo.svg" // Sesuaikan path logo
                 alt="Logo"
-                className="w-32 h-32 object-contain"
+                className="w-64 h-64 md:w-128 md:h-128 object-contain"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
@@ -36,7 +36,7 @@ export default function SplashScreen({ onAnimationComplete }) {
                 initial={{ height: "0%" }}
                 animate={{ height: "100%" }}
                 transition={{ duration: 1.2, ease: "easeInOut", delay: 2 }}
-                className="absolute bottom-0 left-0 w-full bg-green-500"
+                className="absolute bottom-0 left-0 w-full bg-[#80B1A7]"
             />
         </motion.div>
     );

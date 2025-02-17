@@ -12,7 +12,8 @@ const categoryColors = {
 };
 
 const HistoryTable = ({ data }) => {
-    const [sortBy, setSortBy] = useState("date");
+    // Gunakan "created_at" untuk sorting tanggal
+    const [sortBy, setSortBy] = useState("created_at");
     const [sortOrder, setSortOrder] = useState("desc"); // 'asc' atau 'desc'
 
     const handleSort = (key) => {
@@ -25,11 +26,15 @@ const HistoryTable = ({ data }) => {
     };
 
     const sortedData = [...data].sort((a, b) => {
-        if (sortBy === "date") {
-            return sortOrder === "asc" ? new Date(a.date) - new Date(b.date) : new Date(b.date) - new Date(a.date);
+        if (sortBy === "created_at") {
+            return sortOrder === "asc"
+                ? new Date(a.created_at) - new Date(b.created_at)
+                : new Date(b.created_at) - new Date(a.created_at);
         }
         if (sortBy === "category") {
-            return sortOrder === "asc" ? a.category.localeCompare(b.category) : b.category.localeCompare(a.category);
+            return sortOrder === "asc"
+                ? a.category.localeCompare(b.category)
+                : b.category.localeCompare(a.category);
         }
         if (sortBy === "value") {
             return sortOrder === "asc" ? a.value - b.value : b.value - a.value;
@@ -44,14 +49,14 @@ const HistoryTable = ({ data }) => {
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="bg-gray-100 text-gray-600 text-sm">
-                            {["category", "date", "value"].map((key, index) => (
+                            {["category", "created_at", "value"].map((key, index) => (
                                 <th
                                     key={index}
                                     className="py-3 px-4 text-left cursor-pointer transition-all hover:bg-gray-200"
                                     onClick={() => handleSort(key)}
                                 >
                                     {key === "category" && "Kategori"}
-                                    {key === "date" && "Tanggal"}
+                                    {key === "created_at" && "Tanggal"}
                                     {key === "value" && "Emisi (kgCO₂)"}
                                     {sortBy === key && (
                                         <motion.span
@@ -92,7 +97,7 @@ const HistoryTable = ({ data }) => {
                                             </span>
                                         </td>
                                         <td className="py-3 px-4 text-gray-700">
-                                            {new Date(item.date).toLocaleDateString("id-ID")}
+                                            {new Date(item.created_at).toLocaleDateString("id-ID")}
                                         </td>
                                         <td className="py-3 px-4 text-right font-semibold text-gray-800">
                                             {item.value.toFixed(2)}

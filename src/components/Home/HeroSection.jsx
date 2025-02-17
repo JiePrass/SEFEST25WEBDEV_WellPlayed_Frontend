@@ -44,7 +44,7 @@ export default function HeroSection() {
                 </p>
                 <Link
                     to="/login"
-                    className="text-xs mt-4 md:mt-6 bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg transition inline-block"
+                    className="text-xs mt-4 md:mt-6 bg-[#619086] hover:bg-[#80B1A7] text-[#F4F4F4] font-semibold px-4 py-2 md:px-6 md:py-3 rounded-lg transition inline-block"
                 >
                     Hitung Sekarang!
                 </Link>

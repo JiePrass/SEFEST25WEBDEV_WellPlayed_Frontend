@@ -13,7 +13,7 @@ import MissionsPage from "./pages/MissionsPage";
 import Leaderboard from "./pages/Leaderboard"
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Footer from "./components/Navigations/Footer";
+import FooterApp from "./components/Navigations/FooterApp";
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -96,7 +96,7 @@ export default function App() {
                           <Route path="*" element={<Navigate to="/" />} />
                         </Routes>
                       </main>
-                      <Footer />
+                      <FooterApp />
                     </div>
                   </div>
 
@@ -114,7 +114,7 @@ export default function App() {
                         <Route path="*" element={<Navigate to="/" />} />
                       </Routes>
                     </main>
-                    <Footer />
+                    <FooterApp />
                     <div
                       className={`fixed inset-y-0 left-0 z-40 bg-white shadow-lg transition-transform duration-300
                         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}

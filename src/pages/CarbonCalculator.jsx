@@ -149,12 +149,15 @@ export default function CarbonCalculator() {
             });
 
         try {
-            await Promise.all(
+            // Mengirim semua kategori emisi secara paralel
+            const responses = await Promise.all(
                 categoriesToSubmit.map((item) => api.post("/kalkulator", item))
             );
+            // Misalnya, kita ambil pesan dari response pertama untuk ditampilkan
+            const missionMessage = responses[0].data.message || "Data emisi berhasil disimpan!";
             Swal.fire({
                 title: "Berhasil!",
-                text: "Data emisi berhasil disimpan!",
+                text: missionMessage,
                 icon: "success",
                 confirmButtonText: "OK",
             }).then(() => {
@@ -195,31 +198,19 @@ export default function CarbonCalculator() {
                         <div className="mt-4 space-y-1">
                             <p className="text-gray-700">
                                 Transportasi:{" "}
-                                <span className="font-semibold">
-                                    {emissions.transportation.toFixed(2)}
-                                </span>{" "}
-                                kg CO₂
+                                <span className="font-semibold">{emissions.transportation.toFixed(2)}</span> kg CO₂
                             </p>
                             <p className="text-gray-700">
                                 Listrik:{" "}
-                                <span className="font-semibold">
-                                    {emissions.electricity.toFixed(2)}
-                                </span>{" "}
-                                kg CO₂
+                                <span className="font-semibold">{emissions.electricity.toFixed(2)}</span> kg CO₂
                             </p>
                             <p className="text-gray-700">
                                 Makanan:{" "}
-                                <span className="font-semibold">
-                                    {emissions.food.toFixed(2)}
-                                </span>{" "}
-                                kg CO₂
+                                <span className="font-semibold">{emissions.food.toFixed(2)}</span> kg CO₂
                             </p>
                             <p className="text-gray-700">
                                 Aktivitas Lainnya:{" "}
-                                <span className="font-semibold">
-                                    {emissions.other.toFixed(2)}
-                                </span>{" "}
-                                kg CO₂
+                                <span className="font-semibold">{emissions.other.toFixed(2)}</span> kg CO₂
                             </p>
                         </div>
                     </div>

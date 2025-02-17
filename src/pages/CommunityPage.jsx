@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import Post from "../components/Post";
 import CreatePostForm from "../components/Form/CreatePostForm";
+import Swal from "sweetalert2";
 import api from "../../services/api";
 
 export default function CommunityPage() {
     const [posts, setPosts] = useState([]);
-
     const fetchPosts = async () => {
         try {
             const response = await api.get("/community");
@@ -20,90 +20,157 @@ export default function CommunityPage() {
     }, []);
 
     // Fungsi untuk toggle like
-    const likePost = async (postId) => {
-        // Optimistic update: tambahkan like ke community_likes array
-        setPosts((prevPosts) =>
-            prevPosts.map((post) => {
-                if (post.id === postId) {
-                    // Buat objek like sementara
-                    const newLike = {
-                        id: Date.now(), // gunakan timestamp sebagai ID sementara
-                        likeCount: 1,
-                        user: {
-                            id: parseInt(localStorage.getItem("user_id"), 10),
-                            name: localStorage.getItem("username") || "User",
-                            profile_picture: localStorage.getItem("profile_picture") || "",
-                        },
-                    };
-                    return {
-                        ...post,
-                        community_likes: [...(post.community_likes || []), newLike],
-                    };
-                }
-                return post;
-            })
+    const toggleLikePost = async (postId) => {
+        // Pastikan postId berupa string untuk perbandingan
+        const targetPostId = postId.toString();
+
+        // Cari post terkait dengan membandingkan ID dalam bentuk string
+        const post = posts.find((p) => p.id.toString() === targetPostId);
+        if (!post) return;
+
+        // Ambil user_id dari localStorage
+        const loggedInUserId = parseInt(localStorage.getItem("user_id"));
+        if (isNaN(loggedInUserId)) {
+            console.error("User ID tidak ditemukan di localStorage");
+            return;
+        }
+
+        // Pastikan community_likes berupa array
+        const likes = post.community_likes || [];
+        // Cek apakah user sudah pernah like post ini
+        const existingLike = likes.find(
+            (like) => like.user && like.user.id === loggedInUserId
         );
 
-        try {
-            // Panggil API tanpa body (API hanya membutuhkan postId di URL)
-            await api.post(`/community/${postId}/like`);
-            // Jika perlu, Anda bisa re-fetch data untuk sinkronisasi, tapi sebaiknya tidak agar tidak menimpa update optimistik.
-        } catch (error) {
-            console.error("Error liking post:", error);
-            // Rollback jika terjadi error
-            setPosts((prevPosts) =>
-                prevPosts.map((post) => {
-                    if (post.id === postId) {
-                        return {
-                            ...post,
-                            community_likes: (post.community_likes || []).slice(0, -1),
-                        };
-                    }
-                    return post;
-                })
-            );
+        if (existingLike) {
+            // Jika sudah like, lakukan unlike
+            const likeId = existingLike.id;
+            if (!likeId) {
+                console.error("Like id tidak ditemukan, tidak dapat melakukan unlike");
+                return;
+            }
+            try {
+                await api.delete(`/community/${postId}/like/${likeId}`);
+                // Update state: hapus like dan perbarui jumlah like
+                setPosts((prevPosts) =>
+                    prevPosts.map((p) => {
+                        if (p.id.toString() === targetPostId) {
+                            const newLikes = (p.community_likes || []).filter(
+                                (like) => like.id !== likeId
+                            );
+                            return { ...p, community_likes: newLikes, like_count: newLikes.length };
+                        }
+                        return p;
+                    })
+                );
+            } catch (error) {
+                console.error("Error unliking post:", error);
+            }
+        } else {
+            // Jika belum like, lakukan like
+            try {
+                const response = await api.post(`/community/${postId}/like`);
+                console.log("API like response:", response.data);
+
+                // Buat objek like baru menggunakan data dari API
+                const newLike = {
+                    ...response.data.data,
+                    user: {
+                        id: loggedInUserId,
+                        name: localStorage.getItem("username") || "User",
+                        profile_picture: localStorage.getItem("profile_picture") || "",
+                    },
+                };
+
+                if (!newLike.id) {
+                    console.error("Objek like baru tidak memiliki id:", newLike);
+                    return;
+                }
+
+                // Update state: tambahkan like baru dan perbarui jumlah like
+                setPosts((prevPosts) =>
+                    prevPosts.map((p) => {
+                        if (p.id.toString() === targetPostId) {
+                            const newLikes = [...(p.community_likes || []), newLike];
+                            return { ...p, community_likes: newLikes, like_count: newLikes.length };
+                        }
+                        return p;
+                    })
+                );
+            } catch (error) {
+                console.error("Error liking post:", error);
+            }
         }
     };
+
 
     const addComment = async (postId, commentText) => {
         const user_id = parseInt(localStorage.getItem("user_id"), 10);
         const username = localStorage.getItem("username") || "User";
-        const newComment = {
-            id: `${Date.now()}-${Math.random()}`,
+        const profile_picture = localStorage.getItem("profile_picture") || "";
+
+        // Create a temporary comment object matching the API response structure
+        const tempComment = {
+            id: `temp-${Date.now()}`, // Temporary ID for optimistic update
             user_id,
             post_id: postId,
-            comment: commentText,
-            commenter: {
+            parent_id: null, // Assuming this is a top-level comment
+            comment: commentText, // Field name matches API response
+            commenter: { // Structure matches API response
                 id: user_id,
                 name: username,
+                profile_picture: profile_picture,
             },
-            replies: [],
+            replies: [], // Initialize replies as an empty array
         };
 
+        // Optimistically update the UI
         setPosts((prevPosts) =>
             prevPosts.map((post) =>
                 post.id === postId
-                    ? { ...post, comments: [...(post.comments || []), newComment] }
+                    ? {
+                        ...post,
+                        comments: [...(post.comments || []), tempComment], // Add the temporary comment
+                    }
                     : post
             )
         );
 
         try {
+            // Kirim request ke API
             await api.post(`/community/${postId}/comments`, {
                 content: commentText,
             });
+
+            // Fetch ulang data agar data terbaru dari server langsung ditampilkan
+            fetchPosts();
         } catch (error) {
             console.error("Error adding comment:", error);
+
+            // Rollback jika gagal (hapus komentar sementara)
+            setPosts((prevPosts) =>
+                prevPosts.map((post) =>
+                    post.id === postId
+                        ? {
+                            ...post,
+                            comments: post.comments.filter((comment) => comment.id !== tempComment.id),
+                        }
+                        : post
+                )
+            );
         }
+
+
     };
 
     const reportPost = async (postId) => {
-        alert(`Post dengan ID ${postId} telah dilaporkan.`);
-        try {
-            await api.post(`/community/${postId}/report`);
-        } catch (error) {
-            console.error("Error reporting post:", error);
-        }
+        Swal.fire({
+            icon: "success",
+            title: "Laporan Dikirim!",
+            text: `Post dengan ID ${postId} telah dilaporkan.`,
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK",
+        });
     };
 
     const addPost = async (newPost) => {
@@ -127,7 +194,7 @@ export default function CommunityPage() {
                         <Post
                             key={post.id}
                             post={post}
-                            likePost={likePost}
+                            toggleLikePost={toggleLikePost}
                             addComment={addComment}
                             reportPost={reportPost}
                             refreshPosts={fetchPosts}

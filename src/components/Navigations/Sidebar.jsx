@@ -40,13 +40,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, isCollapsed, setIsCollapsed }) =
                 <div className="flex flex-col h-full">
                     {/* Header */}
                     <div className="flex items-center p-4">
-                        <h1 className={`overflow-hidden transition-all duration-300 ${isCollapsed ? "opacity-0 w-0" : "opacity-100 w-full"}`}>
-                            <span className="text-2xl font-bold text-emerald-600">CarbonTrack</span>
-                        </h1>
+                        <img src="/assets/Logo/logo.svg" alt="Logo" className={`overflow-hidden transition-all duration-300 ${isCollapsed ? "opacity-0 w-0" : "opacity-100 w-full"}`} />
                         {/* Tombol collapse (hanya di desktop) */}
                         <button
                             onClick={() => setIsCollapsed(!isCollapsed)}
-                            className="hidden md:block p-2 hover:bg-gray-100 rounded-lg"
+                            className="hidden md:block p-2 hover:bg-gray-100 rounded-lg "
                         >
                             <Bars3BottomLeftIcon className={`w-6 h-6 transform transition-transform duration-300 ${isCollapsed && "rotate-180"}`} />
                         </button>

@@ -1,3 +1,5 @@
+import { PhoneIcon, EnvelopeIcon } from "@heroicons/react/24/solid";
+
 export default function ContactForm() {
     // Fungsi untuk mengirim melalui Email
     const handleEmailSubmit = (event) => {
@@ -26,14 +28,14 @@ export default function ContactForm() {
     };
 
     return (
-        <div className="w-full min-h-screen pt-10">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-12 w-full">
+        <div className="w-full py-10">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-12 w-full">
                 {/* Bagian Kiri */}
                 <div className="md:col-span-5 rounded-lg">
-                    <h1 className="text-5xl font-bold text-gray-800 mb-8">
+                    <h1 className="text-2xl md:text-5xl font-bold text-gray-800 mb-4 md:mb-8">
                         Hubungi Kami Segera! Kami Siap Membantu anda
                     </h1>
-                    <p className="text-xl text-gray-600">
+                    <p className="text-sm md:text-xl text-gray-600">
                         Jika Anda memiliki pertanyaan atau butuh informasi lebih lanjut, tim kami siap memberikan bantuan <br /> dengan cepat dan ramah.
                     </p>
                 </div>
@@ -63,20 +65,20 @@ export default function ContactForm() {
                                 placeholder="Tuliskan Pesan Anda Disini"
                             ></textarea>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4">
                             <button
                                 type="button"
                                 onClick={handleEmailSubmit}
-                                className="flex-1 bg-lime-500 text-white p-3 rounded-lg text-lg"
+                                className="flex-1 flex items-center justify-center gap-2 bg-lime-500 text-white p-3 rounded-lg text-lg hover:bg-lime-600 transition"
                             >
-                                Kirim via Email
+                                <EnvelopeIcon className="w-6 h-6" />Email
                             </button>
                             <button
                                 type="button"
                                 onClick={handleWaSubmit}
-                                className="flex-1 bg-green-600 text-white p-3 rounded-lg text-lg"
+                                className="flex-1 flex items-center justify-center gap-2 bg-green-600 text-white p-3 rounded-lg text-lg hover:bg-green-700 transition"
                             >
-                                Kirim via WhatsApp
+                                <PhoneIcon className="w-6 h-6" />WhatsApp
                             </button>
                         </div>
                     </form>

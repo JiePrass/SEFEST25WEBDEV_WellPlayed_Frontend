@@ -11,8 +11,12 @@ import { Tooltip } from 'react-tooltip';
 const AVERAGE_EMISSION_WEEKLY = 86;
 const AVERAGE_EMISSION_MONTHLY = 372.5;
 
-const Dashboard = ({ emissionData = [] }) => {
-    const [timeFilter, setTimeFilter] = useState('monthly');
+const Dashboard = ({ emissionData = {} }) => {
+    // Ekstrak array emissions dari properti emissionData
+    const emissions = Array.isArray(emissionData.emissions) ? emissionData.emissions : [];
+
+    // Default filter "all" agar menampilkan semua data
+    const [timeFilter, setTimeFilter] = useState('all');
     const [filteredData, setFilteredData] = useState([]);
     const [totalEmission, setTotalEmission] = useState(0);
     const [averageEmission, setAverageEmission] = useState(0);
@@ -20,15 +24,17 @@ const Dashboard = ({ emissionData = [] }) => {
     const [visibleCount, setVisibleCount] = useState(5);
 
     const loadMore = () => {
-        setVisibleCount((prev) => prev + 5);
+        setVisibleCount(prev => prev + 5);
     };
 
     useEffect(() => {
         filterData();
-    }, [timeFilter, emissionData]);
+    }, [timeFilter, emissions]);
 
     const filterData = () => {
-        if (!emissionData.length) {
+        console.log('emissionData:', emissionData);
+        console.log('extracted emissions:', emissions);
+        if (!emissions.length) {
             setFilteredData([]);
             setTotalEmission(0);
             setAverageEmission(0);
@@ -36,6 +42,19 @@ const Dashboard = ({ emissionData = [] }) => {
             return;
         }
 
+        // Jika filter "all", tampilkan semua data
+        if (timeFilter === 'all') {
+            console.log('Filter: all');
+            setFilteredData(emissions);
+            const total = emissions.reduce((sum, item) => sum + item.value, 0);
+            setTotalEmission(total);
+            setAverageEmission(0); // Rata-rata tidak relevan untuk "all"
+            setPreviousTotal([]);
+            console.log('Filtered Data (all):', emissions);
+            return;
+        }
+
+        // Untuk weekly dan monthly, filter berdasarkan waktu sistem
         const now = new Date();
         const currentYear = now.getFullYear();
         const currentMonth = now.getMonth() + 1;
@@ -43,53 +62,57 @@ const Dashboard = ({ emissionData = [] }) => {
         let filtered = [];
         let previousFiltered = [];
 
-        if (timeFilter === 'all') {
-            filtered = emissionData;
-        } else if (timeFilter === 'weekly') {
+        if (timeFilter === 'weekly') {
+            console.log('Filter: weekly');
             const startDate = new Date(now);
             startDate.setDate(now.getDate() - 6);
 
             const previousStartDate = new Date(startDate);
             previousStartDate.setDate(previousStartDate.getDate() - 7);
 
-            filtered = emissionData.filter(item => {
-                const itemDateObj = new Date(item.created_at);
-                return itemDateObj >= startDate && itemDateObj <= now;
+            filtered = emissions.filter(item => {
+                const itemDate = new Date(item.created_at);
+                return itemDate >= startDate && itemDate <= now;
             });
 
-            previousFiltered = emissionData.filter(item => {
-                const itemDateObj = new Date(item.created_at);
-                return itemDateObj >= previousStartDate && itemDateObj < startDate;
+            previousFiltered = emissions.filter(item => {
+                const itemDate = new Date(item.created_at);
+                return itemDate >= previousStartDate && itemDate < startDate;
             });
         } else if (timeFilter === 'monthly') {
-            filtered = emissionData.filter(item => {
-                const itemDateObj = new Date(item.created_at);
+            console.log('Filter: monthly');
+            filtered = emissions.filter(item => {
+                const itemDate = new Date(item.created_at);
                 return (
-                    itemDateObj.getFullYear() === currentYear &&
-                    (itemDateObj.getMonth() + 1) === currentMonth
+                    itemDate.getFullYear() === currentYear &&
+                    (itemDate.getMonth() + 1) === currentMonth
                 );
             });
 
-            previousFiltered = emissionData.filter(item => {
-                const itemDateObj = new Date(item.created_at);
+            previousFiltered = emissions.filter(item => {
+                const itemDate = new Date(item.created_at);
                 return (
-                    itemDateObj.getFullYear() === currentYear &&
-                    (itemDateObj.getMonth() + 1) === currentMonth - 1
+                    itemDate.getFullYear() === currentYear &&
+                    (itemDate.getMonth() + 1) === currentMonth - 1
                 );
             });
         }
 
         const total = filtered.reduce((sum, item) => sum + item.value, 0);
-
         const daysCount =
             timeFilter === 'weekly'
                 ? 7
-                : new Date(currentYear, currentMonth, 0).getDate();
+                : timeFilter === 'monthly'
+                    ? new Date(currentYear, currentMonth, 0).getDate()
+                    : 1;
 
         setFilteredData(filtered);
         setTotalEmission(total);
         setAverageEmission(total / daysCount);
         setPreviousTotal(previousFiltered.length ? previousFiltered : []);
+
+        console.log('Filtered Data:', filtered);
+        console.log('Total Emission:', total);
     };
 
     const getIndicatorColor = () => {
@@ -110,6 +133,7 @@ const Dashboard = ({ emissionData = [] }) => {
                     onChange={(e) => setTimeFilter(e.target.value)}
                     className="px-4 py-2 border rounded-lg bg-white"
                 >
+                    <option value="all">Semua</option>
                     <option value="weekly">Mingguan</option>
                     <option value="monthly">Bulanan</option>
                 </select>
@@ -124,7 +148,13 @@ const Dashboard = ({ emissionData = [] }) => {
                     </span>
                     <div className="flex items-center">
                         <span className="text-lg font-semibold">
-                            Rata-rata ({timeFilter === 'weekly' ? "Mingguan" : "Bulanan"}): {averageEmission.toFixed(2)} kgCO₂
+                            Rata-rata (
+                            {timeFilter === 'weekly'
+                                ? "Mingguan"
+                                : timeFilter === 'monthly'
+                                    ? "Bulanan"
+                                    : "Semua"}
+                            ): {timeFilter !== 'all' ? averageEmission.toFixed(2) : '-'} kgCO₂
                         </span>
                         <InformationCircleIcon className="h-5 w-5 ml-2 cursor-pointer" data-tooltip-id="tooltip-global" />
                     </div>
@@ -177,12 +207,16 @@ const Dashboard = ({ emissionData = [] }) => {
                                 </tr>
                             )}
                             {filteredData.length > visibleCount && (
-                                <button
-                                    onClick={loadMore}
-                                    className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                                >
-                                    Selengkapnya
-                                </button>
+                                <tr>
+                                    <td colSpan="3" className="text-center">
+                                        <button
+                                            onClick={loadMore}
+                                            className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                                        >
+                                            Selengkapnya
+                                        </button>
+                                    </td>
+                                </tr>
                             )}
                         </tbody>
                     </table>

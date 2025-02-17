@@ -27,7 +27,7 @@ export default function Home() {
                     transition={{ duration: 1 }}
                 >
                     <Header />
-                    <div className="mx-[40px] space-y-10">
+                    <div className="mx-[40px]">
                         <MotionWrapper>
                             <HeroSection />
                         </MotionWrapper>
@@ -40,8 +40,8 @@ export default function Home() {
                         <MotionWrapper>
                             <Contact />
                         </MotionWrapper>
-                        <Footer />
                     </div>
+                    <Footer />
                 </motion.div>
             )}
         </div>

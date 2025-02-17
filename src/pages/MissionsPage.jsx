@@ -8,15 +8,16 @@ export default function MissionsPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // Mengambil data misi dari API /missions
+    // Saat komponen dimount, ambil daftar misi dan misi aktif
     useEffect(() => {
         fetchMissions();
+        fetchActiveMission();
     }, []);
 
     const fetchMissions = async () => {
         try {
             const response = await api.get('/missions');
-            // Response yang diharapkan: { message: 'Daftar misi berhasil diambil!', missions: [...] }
+            // Mengharapkan response: { message: 'Daftar misi berhasil diambil!', missions: [...] }
             setMissions(response.data.missions);
         } catch (err) {
             console.error('Error fetching missions: ', err);
@@ -26,7 +27,20 @@ export default function MissionsPage() {
         }
     };
 
-    // Fungsi untuk mengambil misi
+    // Fungsi untuk mengambil data misi aktif (jika ada)
+    const fetchActiveMission = async () => {
+        try {
+            const response = await api.get('/missions/status'); // Pastikan endpoint ini ada di backend
+            if (response.data.activeMission) {
+                setActiveMission(response.data.activeMission);
+            }
+        } catch (err) {
+            console.error('Error fetching active mission: ', err);
+            // Jika tidak ada misi aktif, tidak perlu mengubah state
+        }
+    };
+
+    // Fungsi untuk mengambil misi baru
     const handleTakeMission = async (mission) => {
         if (activeMission) {
             return Swal.fire({
@@ -38,6 +52,7 @@ export default function MissionsPage() {
         }
         try {
             await api.post('/missions/take', { missionId: mission.id });
+            // Setelah berhasil mengambil misi, kita update activeMission dari backend
             setActiveMission(mission);
             Swal.fire({
                 title: 'Berhasil!',
